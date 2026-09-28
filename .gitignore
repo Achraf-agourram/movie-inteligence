@@ -16,7 +16,9 @@ data/exports/*
 !data/features/.gitkeep
 !data/exports/.gitkeep
 
-models/*
+
+
+!models/.gitkeep
 
 airflow/logs/
 logs/
