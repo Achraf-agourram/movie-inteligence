@@ -47,12 +47,46 @@ def extract_names(values):
     ]
 
 
-def analyze_data(df):
-    return {
-        "shape": df.shape,
-        "dtypes": df.dtypes.astype(str).to_dict(),
-        "missing_values": df.isna().sum().to_dict(),
-        "duplicate_movie_ids": int(df["movie_id"].duplicated().sum())
-    }
+def clean_data(data):
+    df = pd.DataFrame(data)
 
+    columns = [
+        "movie_id",
+        "title",
+        "overview",
+        "release_date",
+        "runtime",
+        "original_language",
+        "genres",
+        "keywords",
+        "budget",
+        "revenue",
+        "popularity",
+        "vote_average",
+        "vote_count"
+    ]
 
+    df = df[columns]
+
+    df["genres"] = df["genres"].apply(extract_names)
+    df["keywords"] = df["keywords"].apply(extract_names)
+
+    df["release_date"] = pd.to_datetime(df["release_date"], errors="coerce")
+
+    for column in NUMERIC_COLUMNS:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
+
+    for column in ["runtime", "budget", "revenue", "popularity", "vote_average", "vote_count"]:
+        df.loc[df[column] < 0, column] = np.nan
+
+    df.loc[df["vote_average"] > 10, "vote_average"] = np.nan
+
+    df["title"] = df["title"].fillna("").str.strip()
+    df["overview"] = df["overview"].fillna("").str.strip()
+    df["original_language"] = (df["original_language"].fillna("").str.strip())
+
+    df = df.dropna(subset=["movie_id", "title"])
+
+    df = df.drop_duplicates(subset=["movie_id"], keep="first")
+
+    return df
