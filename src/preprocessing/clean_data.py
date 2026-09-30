@@ -111,7 +111,7 @@ def save_clean_data(df):
 
     csv_df.to_csv(CLEAN_CSV, index=False, encoding="utf-8")
 
-    df.to_json(CLEAN_JSON, orient="records", force_ascii=False, date_format="iso")
+    df.to_json(CLEAN_JSON, orient="records", force_ascii=False, date_format="iso", indent=2)
 
 
 def main():
