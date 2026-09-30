@@ -30,7 +30,7 @@ def connect_mongodb():
 def convert_dates(movies):
     for movie in movies:
         if movie.get("release_date"):
-            movie["release_date"] = datetime.fromisoformat(movie["release_date"].replace("Z", "+00:00"))
+            movie["release_date"] = datetime.fromisoformat(movie["release_date"])
 
     return movies
 
