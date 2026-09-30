@@ -90,3 +90,12 @@ def clean_data(data):
     df = df.drop_duplicates(subset=["movie_id"], keep="first")
 
     return df
+
+
+def separate_variables(df):
+    numeric_df = df[NUMERIC_COLUMNS].copy()
+    categorical_df = df[CATEGORICAL_COLUMNS].copy()
+    text_df = df[TEXT_COLUMNS].copy()
+
+    return numeric_df, categorical_df, text_df
+
