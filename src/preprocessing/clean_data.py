@@ -99,3 +99,37 @@ def separate_variables(df):
 
     return numeric_df, categorical_df, text_df
 
+
+def save_clean_data(df):
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+    csv_df = df.copy()
+
+    csv_df["genres"] = csv_df["genres"].apply(lambda values: ", ".join(values))
+
+    csv_df["keywords"] = csv_df["keywords"].apply(lambda values: ", ".join(values))
+
+    csv_df.to_csv(CLEAN_CSV, index=False, encoding="utf-8")
+
+    df.to_json(CLEAN_JSON, orient="records", force_ascii=False, date_format="iso")
+
+
+def main():
+    data = load_raw_data()
+
+    clean_df = clean_data(data)
+
+    numeric_df, categorical_df, text_df = separate_variables(clean_df)
+
+    save_clean_data(clean_df)
+
+    return {
+        "clean_shape": clean_df.shape,
+        "numeric_columns": numeric_df.columns.tolist(),
+        "categorical_columns": categorical_df.columns.tolist(),
+        "text_columns": text_df.columns.tolist()
+    }
+
+
+if __name__ == "__main__":
+    result = main()
