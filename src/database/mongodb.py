@@ -34,3 +34,27 @@ def convert_dates(movies):
 
     return movies
 
+
+def load_to_mongodb():
+    movies = load_movies()
+    movies = convert_dates(movies)
+
+    client, collection = connect_mongodb()
+
+    collection.create_index("movie_id", unique=True)
+
+    for movie in movies:
+        collection.replace_one(
+            {"movie_id": movie["movie_id"]},
+            movie,
+            upsert=True
+        )
+
+    client.close()
+
+    return len(movies)
+
+
+if __name__ == "__main__":
+    count = load_to_mongodb()
+    print(f"{count} movies loaded into MongoDB")
