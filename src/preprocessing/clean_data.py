@@ -45,3 +45,14 @@ def extract_names(values):
         for value in values
         if isinstance(value, dict) and value.get("name")
     ]
+
+
+def analyze_data(df):
+    return {
+        "shape": df.shape,
+        "dtypes": df.dtypes.astype(str).to_dict(),
+        "missing_values": df.isna().sum().to_dict(),
+        "duplicate_movie_ids": int(df["movie_id"].duplicated().sum())
+    }
+
+
