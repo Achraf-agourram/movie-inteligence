@@ -51,3 +51,20 @@ def create_runtime_features(df):
 
     return df
 
+
+def create_text_features(df):
+
+    df["overview"] = df["overview"].fillna("")
+    df["overview_length"] = df["overview"].str.len()
+    df["has_overview"] = (df["overview"].str.strip() != "").astype(int)
+
+    return df
+
+
+def create_budget_features(df):
+
+    df["has_budget"] = (df["budget"] > 0).astype(int)
+    df["budget_log"] = np.log1p(df["budget"].where(df["budget"] > 0))
+
+    return df
+
