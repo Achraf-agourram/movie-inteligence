@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
@@ -20,3 +19,19 @@ def create_date_features(df):
     df["release_decade"] = (df["release_year"] // 10) * 10
 
     return df
+
+
+def create_count_features(df):
+
+    df["genre_count"] = (df["genres"].fillna("").apply(
+            lambda x: len(x.split(", ")) if x else 0
+        )
+    )
+
+    df["keyword_count"] = (df["keywords"].fillna("").apply(
+            lambda x: len(x.split(", ")) if x else 0
+        )
+    )
+
+    return df
+
