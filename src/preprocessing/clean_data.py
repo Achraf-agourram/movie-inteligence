@@ -106,21 +106,16 @@ def save_clean_data(df):
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
     csv_df = df.copy()
-
     csv_df["genres"] = csv_df["genres"].apply(lambda values: ", ".join(values))
-
     csv_df["keywords"] = csv_df["keywords"].apply(lambda values: ", ".join(values))
-
-    csv_df.to_csv(CLEAN_CSV, index=False, encoding="utf-8")
-
+    
     df.to_json(CLEAN_JSON, orient="records", force_ascii=False, date_format="iso", indent=2)
 
 
 def main():
+
     data = load_raw_data()
-
     clean_df = clean_data(data)
-
     numeric_df, categorical_df, text_df = separate_variables(clean_df)
 
     client, collection = connect_mongodb()
@@ -137,3 +132,4 @@ def main():
 
 if __name__ == "__main__":
     result = main()
+    print(result)

@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import pandas as pd
 
 
 load_dotenv()
@@ -28,10 +29,8 @@ def connect_mongodb():
 
 
 def convert_dates(movies):
-    for movie in movies:
-        if movie.get("release_date"):
-            movie["release_date"] = datetime.fromisoformat(movie["release_date"])
 
+    movies["release_date"] = pd.to_datetime(movies["release_date"], errors="coerce")
     return movies
 
 
@@ -40,7 +39,7 @@ def load_to_mongodb(movies, client, collection):
     movies = convert_dates(movies)
     collection.create_index("movie_id", unique=True)
 
-    for movie in movies:
+    for movie in movies.to_dict("records"):
         collection.replace_one(
             {"movie_id": movie["movie_id"]},
             movie,
