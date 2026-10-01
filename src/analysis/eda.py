@@ -115,3 +115,24 @@ def plot_releases_by_year(df):
     plt.close()
 
     return yearly_counts
+
+
+def plot_runtime(df):
+    runtime = df["runtime"].dropna()
+
+    plt.figure(figsize=(10, 6))
+
+    sns.histplot(
+        runtime,
+        kde=True
+    )
+
+    plt.title("Distribution de la durée des films")
+    plt.xlabel("Durée (minutes)")
+    plt.ylabel("Nombre de films")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "runtime_distribution.png")
+    plt.close()
+
+    return runtime
