@@ -68,3 +68,36 @@ def create_budget_features(df):
 
     return df
 
+
+def create_features(df):
+
+    df = create_date_features(df)
+    df = create_count_features(df)
+    df = create_runtime_features(df)
+    df = create_text_features(df)
+    df = create_budget_features(df)
+
+    return df
+
+
+def save_data(df):
+
+    OUTPUT_FILE.parent.mkdir(parents=True,exist_ok=True)
+    df.to_csv(OUTPUT_FILE, index=False)
+
+
+def main():
+    
+    df = load_data()
+    df = create_features(df)
+    save_data(df)
+
+    return df
+
+
+if __name__ == "__main__":
+    df = main()
+
+    print(f"{len(df)} films processed")
+    print(f"Features: {len(df.columns)}")
+    print(f"Saved to {OUTPUT_FILE}")
