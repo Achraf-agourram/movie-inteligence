@@ -88,3 +88,30 @@ def plot_genres(df):
     plt.close()
 
     return genre_counts
+
+
+def plot_releases_by_year(df):
+    yearly_counts = (
+        df["release_year"]
+        .dropna()
+        .astype(int)
+        .value_counts()
+        .sort_index()
+    )
+
+    plt.figure(figsize=(12, 6))
+
+    sns.lineplot(
+        x=yearly_counts.index,
+        y=yearly_counts.values
+    )
+
+    plt.title("Nombre de sorties par année")
+    plt.xlabel("Année")
+    plt.ylabel("Nombre de films")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "releases_by_year.png")
+    plt.close()
+
+    return yearly_counts
