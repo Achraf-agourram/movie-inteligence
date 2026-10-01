@@ -42,3 +42,20 @@ def plot_ratings(df):
 
     plt.savefig(FIGURES_DIR / "ratings_distribution.png")
     plt.close()
+
+
+def plot_popularity(df):
+    plt.figure(figsize=(10, 6))
+
+    sns.histplot(
+        df["popularity"].dropna(),
+        kde=True
+    )
+
+    plt.title("Distribution de la popularité")
+    plt.xlabel("Popularité")
+    plt.ylabel("Nombre de films")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "popularity_distribution.png")
+    plt.close()
