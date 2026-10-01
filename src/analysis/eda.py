@@ -192,3 +192,62 @@ def plot_votes_popularity(df):
 
     return data["vote_count"].corr(data["popularity"])
 
+
+def plot_boxplots(df):
+    columns = [
+        "runtime",
+        "budget",
+        "revenue",
+        "popularity",
+        "vote_average",
+        "vote_count"
+    ]
+
+    data = df[columns].copy()
+
+    for column in ["budget", "revenue", "popularity", "vote_count"]:
+        data[column] = data[column].apply(
+            lambda x: x if x > 0 else None
+        )
+
+    plt.figure(figsize=(12, 8))
+
+    sns.boxplot(data=data)
+
+    plt.title("Boxplots des variables numériques")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "numeric_boxplots.png")
+    plt.close()
+
+
+def plot_correlation(df):
+    columns = [
+        "runtime",
+        "budget",
+        "revenue",
+        "popularity",
+        "vote_average",
+        "vote_count"
+    ]
+
+    correlation = df[columns].corr()
+
+    plt.figure(figsize=(10, 8))
+
+    sns.heatmap(
+        correlation,
+        annot=True,
+        fmt=".2f",
+        cmap="coolwarm",
+        center=0
+    )
+
+    plt.title("Matrice de corrélation")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "correlation_heatmap.png")
+    plt.close()
+
+    return correlation
