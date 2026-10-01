@@ -35,12 +35,9 @@ def convert_dates(movies):
     return movies
 
 
-def load_to_mongodb():
-    movies = load_movies()
+def load_to_mongodb(movies, client, collection):
+
     movies = convert_dates(movies)
-
-    client, collection = connect_mongodb()
-
     collection.create_index("movie_id", unique=True)
 
     for movie in movies:
