@@ -1,7 +1,9 @@
 import pandas as pd
+from pathlib import Path
 import numpy as np
-from ..config import OUTPUT_FILE, load_data
+from ..config import load_data, save_data
 
+OUTPUT_FILE = Path("data/features/movies_features.csv")
 
 def create_date_features(df):
     
@@ -72,17 +74,11 @@ def create_features(df):
     return df
 
 
-def save_data(df):
-
-    OUTPUT_FILE.parent.mkdir(parents=True,exist_ok=True)
-    df.to_csv(OUTPUT_FILE, index=False)
-
-
 def main():
     
     df = load_data()
     df = create_features(df)
-    save_data(df)
+    save_data(df, OUTPUT_FILE)
 
     return df
 

@@ -7,7 +7,6 @@ from pymongo import MongoClient
 
 load_dotenv()
 
-OUTPUT_FILE = Path("data/features/movies_features.csv")
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE", "movies_db")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "movies")
@@ -22,3 +21,9 @@ def load_data():
     client.close()
 
     return pd.DataFrame(movies)
+
+
+def save_data(df, filename):
+
+    filename.parent.mkdir(parents=True,exist_ok=True)
+    df.to_csv(filename, index=False)
