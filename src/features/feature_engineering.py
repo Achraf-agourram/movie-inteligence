@@ -35,3 +35,19 @@ def create_count_features(df):
 
     return df
 
+
+def create_runtime_features(df):
+
+    df["runtime_category"] = pd.cut(
+        df["runtime"],
+        bins=[-np.inf, 90, 120, 150, np.inf],
+        labels=[
+            "short",
+            "medium",
+            "long",
+            "very_long"
+        ]
+    )
+
+    return df
+
