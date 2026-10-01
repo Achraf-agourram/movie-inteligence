@@ -3,6 +3,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src.database.mongodb import load_to_mongodb, connect_mongodb
+
 
 RAW_FILE = Path("data/raw/movies.json")
 PROCESSED_DIR = Path("data/processed")
@@ -121,7 +123,9 @@ def main():
 
     numeric_df, categorical_df, text_df = separate_variables(clean_df)
 
+    client, collection = connect_mongodb()
     save_clean_data(clean_df)
+    load_to_mongodb(clean_df, client, collection)
 
     return {
         "clean_shape": clean_df.shape,

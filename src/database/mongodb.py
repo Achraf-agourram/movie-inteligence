@@ -50,8 +50,3 @@ def load_to_mongodb(movies, client, collection):
     client.close()
 
     return len(movies)
-
-
-if __name__ == "__main__":
-    count = load_to_mongodb()
-    print(f"{count} movies loaded into MongoDB")
