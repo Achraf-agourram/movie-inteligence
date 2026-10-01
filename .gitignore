@@ -16,7 +16,7 @@ data/exports/*
 !data/features/.gitkeep
 !data/exports/.gitkeep
 
-reports/figures/*
+reports/*
 
 !models/.gitkeep
 
