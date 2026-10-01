@@ -59,3 +59,32 @@ def plot_popularity(df):
 
     plt.savefig(FIGURES_DIR / "popularity_distribution.png")
     plt.close()
+
+
+def plot_genres(df):
+    genres = (
+        df["genres"]
+        .str.split(", ")
+        .explode()
+    )
+
+    genres = genres[genres != ""]
+
+    genre_counts = genres.value_counts()
+
+    plt.figure(figsize=(10, 7))
+
+    sns.barplot(
+        x=genre_counts.values,
+        y=genre_counts.index
+    )
+
+    plt.title("Films par genre")
+    plt.xlabel("Nombre de films")
+    plt.ylabel("Genre")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "movies_by_genre.png")
+    plt.close()
+
+    return genre_counts
