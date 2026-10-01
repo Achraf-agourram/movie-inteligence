@@ -1,14 +1,6 @@
-from pathlib import Path
-import numpy as np
 import pandas as pd
-
-
-INPUT_FILE = Path("data/processed/movies_clean.csv")
-OUTPUT_FILE = Path("data/processed/movies_features.csv")
-
-
-def load_data():
-    return pd.read_csv(INPUT_FILE)
+import numpy as np
+from ..config import OUTPUT_FILE, load_data
 
 
 def create_date_features(df):
@@ -24,12 +16,12 @@ def create_date_features(df):
 def create_count_features(df):
 
     df["genre_count"] = (df["genres"].fillna("").apply(
-            lambda x: len(x.split(", ")) if x else 0
+            lambda x: len(x) if x else 0
         )
     )
 
     df["keyword_count"] = (df["keywords"].fillna("").apply(
-            lambda x: len(x.split(", ")) if x else 0
+            lambda x: len(x) if x else 0
         )
     )
 
