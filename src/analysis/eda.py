@@ -251,3 +251,141 @@ def plot_correlation(df):
     plt.close()
 
     return correlation
+
+
+def generate_interpretations(
+    df,
+    genre_counts,
+    yearly_counts,
+    runtime,
+    budget_revenue_corr,
+    votes_popularity_corr,
+    correlation
+):
+    most_common_genre = genre_counts.index[0]
+    most_common_genre_count = genre_counts.iloc[0]
+
+    most_common_year = yearly_counts.idxmax()
+    most_common_year_count = yearly_counts.max()
+
+    median_runtime = runtime.median()
+
+    rating_median = df["vote_average"].median()
+
+    popularity_median = df["popularity"].median()
+
+    strongest_pair = None
+    strongest_value = 0
+
+    for column in correlation.columns:
+        for other in correlation.columns:
+            if column != other:
+                value = abs(correlation.loc[column, other])
+
+                if value > strongest_value:
+                    strongest_value = value
+                    strongest_pair = (
+                        column,
+                        other
+                    )
+
+    interpretations = [
+        f"Notes : la note médiane est de {rating_median:.2f}. "
+        f"La distribution permet d'observer la concentration des évaluations.",
+
+        f"Popularité : la popularité médiane est de {popularity_median:.2f}. "
+        f"La distribution permet d'identifier une éventuelle forte asymétrie et des valeurs extrêmes.",
+
+        f"Genres : {most_common_genre} est le genre le plus représenté "
+        f"avec {most_common_genre_count} films parmi les données analysées.",
+
+        f"Sorties : l'année {most_common_year} contient le plus grand nombre de films "
+        f"avec {most_common_year_count} sorties.",
+
+        f"Durée : la durée médiane est de {median_runtime:.0f} minutes. "
+        f"Le graphique permet d'identifier les durées typiques et les valeurs extrêmes.",
+
+        f"Budget / revenus : la corrélation entre le budget et les revenus est "
+        f"de {budget_revenue_corr:.2f}. Une valeur positive indique qu'ils évoluent "
+        f"globalement dans le même sens.",
+
+        f"Votes / popularité : la corrélation entre le nombre de votes et la popularité "
+        f"est de {votes_popularity_corr:.2f}. Le nuage de points montre la dispersion "
+        f"et les éventuelles valeurs atypiques.",
+
+        "Boxplots : ils permettent d'identifier les médianes, la dispersion "
+        "et les valeurs extrêmes des variables numériques.",
+
+        f"Corrélations : la plus forte corrélation absolue observée entre deux variables "
+        f"numériques est entre {strongest_pair[0]} et {strongest_pair[1]} "
+        f"avec une valeur absolue de {strongest_value:.2f}."
+    ]
+
+    return interpretations
+
+
+def save_interpretations(interpretations):
+    REPORT_FILE.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    with open(
+        REPORT_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+        for interpretation in interpretations:
+            file.write(interpretation + "\n\n")
+
+
+def main():
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+
+    df = load_data()
+    df = prepare_data(df)
+
+    plot_ratings(df)
+    plot_popularity(df)
+
+    genre_counts = plot_genres(df)
+
+    yearly_counts = plot_releases_by_year(df)
+
+    runtime = plot_runtime(df)
+
+    budget_revenue_corr = plot_budget_revenue(df)
+
+    votes_popularity_corr = plot_votes_popularity(df)
+
+    plot_boxplots(df)
+
+    correlation = plot_correlation(df)
+
+    interpretations = generate_interpretations(
+        df,
+        genre_counts,
+        yearly_counts,
+        runtime,
+        budget_revenue_corr,
+        votes_popularity_corr,
+        correlation
+    )
+
+    save_interpretations(interpretations)
+
+    return {
+        "rows": len(df),
+        "columns": len(df.columns),
+        "figures": 9,
+        "report": str(REPORT_FILE)
+    }
+
+
+if __name__ == "__main__":
+    result = main()
+    
+    print(f"{result['rows']} films analyzed")
+    print(f"{result['columns']} columns analyzed")
+    print(f"{result['figures']} figures created")
+    print(f"Interpretations saved to {result['report']}")
