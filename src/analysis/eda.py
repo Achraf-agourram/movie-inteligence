@@ -136,3 +136,59 @@ def plot_runtime(df):
     plt.close()
 
     return runtime
+
+
+def plot_budget_revenue(df):
+    budget_revenue = df[
+        (df["budget"] > 0) &
+        (df["revenue"] > 0)
+    ]
+
+    plt.figure(figsize=(10, 6))
+
+    sns.scatterplot(
+        data=budget_revenue,
+        x="budget",
+        y="revenue"
+    )
+
+    plt.xscale("log")
+    plt.yscale("log")
+
+    plt.title("Budget et revenus")
+    plt.xlabel("Budget")
+    plt.ylabel("Revenus")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "budget_revenue.png")
+    plt.close()
+
+    return budget_revenue["budget"].corr(budget_revenue["revenue"])
+
+
+def plot_votes_popularity(df):
+    data = df[
+        (df["vote_count"] > 0) &
+        (df["popularity"] > 0)
+    ]
+
+    plt.figure(figsize=(10, 6))
+
+    sns.scatterplot(
+        data=data,
+        x="vote_count",
+        y="popularity"
+    )
+
+    plt.xscale("log")
+
+    plt.title("Votes et popularité")
+    plt.xlabel("Nombre de votes")
+    plt.ylabel("Popularité")
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / "votes_popularity.png")
+    plt.close()
+
+    return data["vote_count"].corr(data["popularity"])
+
