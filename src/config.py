@@ -1,10 +1,7 @@
-import os
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from database.mongodb import connect_mongodb
 
-client, collection = connect_mongodb()
 
 def load_data(client, collection):
 
