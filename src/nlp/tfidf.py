@@ -76,3 +76,43 @@ def experiment_tfidf(df):
 
     return results
 
+
+def save_tfidf(vectorizer, matrix, representative_terms):
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    save_npz(MATRIX_FILE, matrix)
+    joblib.dump(vectorizer, VECTORIZER_FILE)
+    representative_terms.to_csv(TERMS_FILE, index=False)
+
+
+def main():
+    client, collection = connect_mongodb()
+    df = load_overviews(client, collection)
+    df = prepare_text(df)
+
+    results = experiment_tfidf(df)
+
+    for result in results:
+        print(
+            f"max_features={result['max_features']}, "
+            f"ngram_range={result['ngram_range']}, "
+            f"shape=({result['rows']}, {result['columns']})"
+        )
+
+        print(
+            f"Top terms: {result['top_terms']}"
+        )
+
+    vectorizer, matrix = create_tfidf(df, max_features=1000, ngram_range=(1, 2))
+
+    representative_terms = get_representative_terms(vectorizer, matrix)
+
+    save_tfidf(vectorizer, matrix, representative_terms)
+
+    return matrix
+
+
+if __name__ == "__main__":
+
+    matrix = main()
+    print(f"Final matrix shape: {matrix.shape}")
