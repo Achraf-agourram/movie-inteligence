@@ -50,3 +50,29 @@ def get_representative_terms(vectorizer, matrix):
 
     return result.sort_values("score", ascending=False)
 
+
+def experiment_tfidf(df):
+    configurations = [
+        (500, (1, 1)),
+        (1000, (1, 1)),
+        (1000, (1, 2)),
+        (2000, (1, 2))
+    ]
+
+    results = []
+
+    for max_features, ngram_range in configurations:
+
+        vectorizer, matrix = create_tfidf(df, max_features, ngram_range)
+        representative_terms = get_representative_terms(vectorizer, matrix)
+
+        results.append({
+            "max_features": max_features,
+            "ngram_range": ngram_range,
+            "rows": matrix.shape[0],
+            "columns": matrix.shape[1],
+            "top_terms": representative_terms.head(10)["term"].tolist()
+        })
+
+    return results
+
