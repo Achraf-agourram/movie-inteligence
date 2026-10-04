@@ -30,3 +30,23 @@ def prepare_text(df):
 
     return df
 
+
+def create_tfidf(df, max_features, ngram_range):
+
+    vectorizer = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, stop_words="english")
+    matrix = vectorizer.fit_transform(df["overview_clean"])
+
+    return vectorizer, matrix
+
+
+def get_representative_terms(vectorizer, matrix):
+    terms = vectorizer.get_feature_names_out()
+    scores = matrix.mean(axis=0).A1
+
+    result = pd.DataFrame({
+        "term": terms,
+        "score": scores
+    })
+
+    return result.sort_values("score", ascending=False)
+
