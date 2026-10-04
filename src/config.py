@@ -10,6 +10,12 @@ def load_data(client, collection):
 
     return pd.DataFrame(movies)
 
+def load_overviews(client, collection):
+    movies = list(collection.find({}, {"_id": 0, "movie_id": 1, "overview": 1}))
+    client.close()
+
+    return pd.DataFrame(movies)
+
 
 def save_data(df, filename):
 
