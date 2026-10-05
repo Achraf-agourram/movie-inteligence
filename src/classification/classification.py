@@ -30,3 +30,10 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 
 def load_data():
     return pd.read_csv(DATA_FILE)
+
+def create_target(df):
+
+    threshold = df["vote_count"].quantile(0.75)
+    df["high_engagement"] = (df["vote_count"] >= threshold).astype(int)
+
+    return df, threshold
