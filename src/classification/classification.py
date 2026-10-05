@@ -32,8 +32,32 @@ def load_data():
     return pd.read_csv(DATA_FILE)
 
 def create_target(df):
-
+    
     threshold = df["vote_count"].quantile(0.75)
     df["high_engagement"] = (df["vote_count"] >= threshold).astype(int)
 
     return df, threshold
+
+def prepare_features(df):
+
+    numeric_features = [
+    "release_year",
+    "release_month",
+    "release_decade",
+    "genre_count",
+    "keyword_count",
+    "runtime",
+    "overview_length",
+    "has_overview",
+    "has_budget",
+    "budget_log"
+    ]
+
+    categorical_features = ["original_language", "runtime_category"]
+
+    X = df[numeric_features + categorical_features]
+
+    y = df["high_engagement"]
+
+    return X, y, numeric_features, categorical_features
+
