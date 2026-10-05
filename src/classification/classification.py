@@ -90,3 +90,47 @@ def create_preprocessor(numeric_features, categorical_features):
 
     return preprocessor
 
+def create_models(numeric_features, categorical_features):
+
+    preprocessor = create_preprocessor(numeric_features, categorical_features)
+
+    models = {
+        "Logistic Regression": Pipeline([
+            ("preprocessing", preprocessor),
+            (
+                "model",
+                LogisticRegression(
+                    max_iter=1000,
+                    class_weight="balanced",
+                    random_state=12
+                )
+            )
+        ]),
+
+        "Random Forest": Pipeline([
+            ("preprocessing", preprocessor),
+            (
+                "model",
+                RandomForestClassifier(
+                    n_estimators=200,
+                    random_state=12,
+                    n_jobs=-1,
+                    class_weight="balanced"
+                )
+            )
+        ]),
+
+        "Linear SVM": Pipeline([
+            ("preprocessing", preprocessor),
+            (
+                "model",
+                LinearSVC(
+                    class_weight="balanced",
+                    random_state=12
+                )
+            )
+        ])
+    }
+
+    return models
+
