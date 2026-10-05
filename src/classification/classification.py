@@ -61,3 +61,32 @@ def prepare_features(df):
 
     return X, y, numeric_features, categorical_features
 
+def create_preprocessor(numeric_features, categorical_features):
+
+    numeric_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scaler", StandardScaler())
+    ])
+
+    categorical_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        ("encoder", OneHotEncoder(
+            handle_unknown="ignore"
+        ))
+    ])
+
+    preprocessor = ColumnTransformer([
+        (
+            "numeric",
+            numeric_pipeline,
+            numeric_features
+        ),
+        (
+            "categorical",
+            categorical_pipeline,
+            categorical_features
+        )
+    ])
+
+    return preprocessor
+
