@@ -167,3 +167,25 @@ def evaluate_model(model, X_test, y_test):
 
     return results, y_pred
 
+def save_confusion_matrix(y_test, y_pred, model_name):
+
+    cm = confusion_matrix(y_test, y_pred)
+
+    display = ConfusionMatrixDisplay(
+        confusion_matrix=cm,
+        display_labels=[
+            "Normal engagement",
+            "High engagement"
+        ]
+    )
+
+    display.plot()
+
+    plt.title(f"Confusion Matrix - {model_name}")
+
+    filename = model_name.lower().replace(" ", "_")
+
+    plt.savefig(f"{RESULTS_DIR}/confusion_matrix_{filename}.png", bbox_inches="tight")
+
+    plt.close()
+
