@@ -1,0 +1,32 @@
+import os
+import joblib
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+accuracy_score,
+classification_report,
+confusion_matrix,
+ConfusionMatrixDisplay,
+f1_score,
+precision_score,
+recall_score,
+roc_auc_score
+)
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.svm import LinearSVC
+
+DATA_FILE = "data/features/movies_features.csv"
+MODEL_DIR = "models/classification"
+RESULTS_DIR = "data/results/classification"
+
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(RESULTS_DIR, exist_ok=True)
+
+def load_data():
+    return pd.read_csv(DATA_FILE)
