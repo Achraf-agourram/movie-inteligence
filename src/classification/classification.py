@@ -168,7 +168,7 @@ def evaluate_model(model, X_test, y_test):
     return results, y_pred
 
 def save_confusion_matrix(y_test, y_pred, model_name):
-
+    
     cm = confusion_matrix(y_test, y_pred)
 
     display = ConfusionMatrixDisplay(
@@ -189,3 +189,93 @@ def save_confusion_matrix(y_test, y_pred, model_name):
 
     plt.close()
 
+def train_and_evaluate():
+    df = load_data()
+
+    df, threshold = create_target(df)
+
+    X, y, numeric_features, categorical_features = prepare_features(
+        df
+    )
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=12,
+        stratify=y
+    )
+
+    models = create_models(
+        numeric_features,
+        categorical_features
+    )
+
+    results = []
+
+    for name, model in models.items():
+
+        model.fit(
+            X_train,
+            y_train
+        )
+
+        metrics, y_pred = evaluate_model(
+            model,
+            X_test,
+            y_test
+        )
+
+        metrics["Model"] = name
+        results.append(metrics)
+
+        save_confusion_matrix(
+            y_test,
+            y_pred,
+            name
+        )
+
+        joblib.dump(
+            model,
+            f"{MODEL_DIR}/{name.lower().replace(' ', '_')}.pkl"
+        )
+
+        print(f"\n{name}")
+        print(
+            classification_report(
+                y_test,
+                y_pred,
+                target_names=[
+                    "Normal engagement",
+                    "High engagement"
+                ],
+                zero_division=0
+            )
+        )
+
+    results_df = pd.DataFrame(results)
+
+    results_df = results_df[
+        [
+            "Model",
+            "Accuracy",
+            "Precision",
+            "Recall",
+            "F1-score",
+            "ROC-AUC"
+        ]
+    ]
+
+    results_df.to_csv(
+        f"{RESULTS_DIR}/model_comparison.csv",
+        index=False
+    )
+
+    print(f"High engagement threshold: {threshold}")
+    print("\nModel comparison:")
+    print(results_df)
+
+    return results_df
+
+if __name__ == "__main__":
+    train_and_evaluate()
