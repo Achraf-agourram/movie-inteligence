@@ -10,13 +10,15 @@ data/raw/*
 data/processed/*
 data/features/*
 data/exports/*
+data/results/*
 
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/features/.gitkeep
 !data/exports/.gitkeep
-
+!data/results/.gitkeep
 reports/*
+models/*
 
 !models/.gitkeep
 
