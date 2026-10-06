@@ -8,7 +8,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
 accuracy_score,
-classification_report,
 confusion_matrix,
 ConfusionMatrixDisplay,
 f1_score,
@@ -221,19 +220,6 @@ def train_and_evaluate():
 
         joblib.dump(model, f"{MODEL_DIR}/{name.lower().replace(' ', '_')}.pkl")
 
-        print(f"\n{name}")
-        print(
-            classification_report(
-                y_test,
-                y_pred,
-                target_names=[
-                    "Normal engagement",
-                    "High engagement"
-                ],
-                zero_division=0
-            )
-        )
-
     results_df = pd.DataFrame(results)
 
     results_df = results_df[
@@ -248,10 +234,6 @@ def train_and_evaluate():
     ]
 
     results_df.to_csv(f"{RESULTS_DIR}/model_comparison.csv", index=False)
-
-    print(f"High engagement threshold: {threshold}")
-    print("\nModel comparison:")
-    print(results_df)
 
     return results_df
 
