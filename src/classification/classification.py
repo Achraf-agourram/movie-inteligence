@@ -19,6 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.svm import LinearSVC
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 DATA_FILE = "data/features/movies_features.csv"
 MODEL_DIR = "models/classification"
@@ -40,38 +41,35 @@ def create_target(df):
 def prepare_features(df):
 
     numeric_features = [
-    "release_year",
-    "release_month",
-    "release_decade",
-    "genre_count",
-    "keyword_count",
-    "runtime",
-    "overview_length",
-    "has_overview",
-    "has_budget",
-    "budget_log"
+        "release_year",
+        "release_month",
+        "release_decade",
+        "runtime",
+        "overview_length",
+        "has_overview",
+        "has_budget",
+        "budget_log"
     ]
 
     categorical_features = ["original_language", "runtime_category"]
+    text_features = ["genres", "keywords"]
 
-    X = df[numeric_features + categorical_features]
+    X = df[numeric_features + categorical_features + text_features]
 
     y = df["high_engagement"]
 
     return X, y, numeric_features, categorical_features
 
 def create_preprocessor(numeric_features, categorical_features):
-
+    
     numeric_pipeline = Pipeline([
-    ("imputer", SimpleImputer(strategy="median")),
-    ("scaler", StandardScaler())
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
     ])
 
     categorical_pipeline = Pipeline([
         ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("encoder", OneHotEncoder(
-            handle_unknown="ignore"
-        ))
+        ("encoder", OneHotEncoder(handle_unknown="ignore"))
     ])
 
     preprocessor = ColumnTransformer([
@@ -84,6 +82,22 @@ def create_preprocessor(numeric_features, categorical_features):
             "categorical",
             categorical_pipeline,
             categorical_features
+        ),
+        (
+            "genres",
+            TfidfVectorizer(
+                lowercase=True,
+                ngram_range=(1, 2)
+            ),
+            "genres"
+        ),
+        (
+            "keywords",
+            TfidfVectorizer(
+                lowercase=True,
+                ngram_range=(1, 2)
+            ),
+            "keywords"
         )
     ])
 
