@@ -194,9 +194,7 @@ def train_and_evaluate():
 
     df, threshold = create_target(df)
 
-    X, y, numeric_features, categorical_features = prepare_features(
-        df
-    )
+    X, y, numeric_features, categorical_features = prepare_features(df)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -206,39 +204,22 @@ def train_and_evaluate():
         stratify=y
     )
 
-    models = create_models(
-        numeric_features,
-        categorical_features
-    )
+    models = create_models(numeric_features, categorical_features)
 
     results = []
 
     for name, model in models.items():
 
-        model.fit(
-            X_train,
-            y_train
-        )
+        model.fit(X_train, y_train)
 
-        metrics, y_pred = evaluate_model(
-            model,
-            X_test,
-            y_test
-        )
+        metrics, y_pred = evaluate_model(model, X_test, y_test)
 
         metrics["Model"] = name
         results.append(metrics)
 
-        save_confusion_matrix(
-            y_test,
-            y_pred,
-            name
-        )
+        save_confusion_matrix(y_test, y_pred, name)
 
-        joblib.dump(
-            model,
-            f"{MODEL_DIR}/{name.lower().replace(' ', '_')}.pkl"
-        )
+        joblib.dump(model, f"{MODEL_DIR}/{name.lower().replace(' ', '_')}.pkl")
 
         print(f"\n{name}")
         print(
@@ -266,10 +247,7 @@ def train_and_evaluate():
         ]
     ]
 
-    results_df.to_csv(
-        f"{RESULTS_DIR}/model_comparison.csv",
-        index=False
-    )
+    results_df.to_csv(f"{RESULTS_DIR}/model_comparison.csv", index=False)
 
     print(f"High engagement threshold: {threshold}")
     print("\nModel comparison:")
