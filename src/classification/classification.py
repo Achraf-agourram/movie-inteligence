@@ -35,7 +35,7 @@ def create_target(df):
     threshold = df["vote_count"].quantile(0.75)
     df["high_engagement"] = (df["vote_count"] >= threshold).astype(int)
 
-    return df, threshold
+    return df
 
 def prepare_features(df):
 
@@ -182,7 +182,7 @@ def save_confusion_matrix(y_test, y_pred, model_name):
 
     plt.title(f"Confusion Matrix - {model_name}")
 
-    filename = model_name.lower().replace(" ", "_")
+    filename = model_name.lower()
 
     plt.savefig(f"{RESULTS_DIR}/confusion_matrix_{filename}.png", bbox_inches="tight")
 
@@ -191,7 +191,7 @@ def save_confusion_matrix(y_test, y_pred, model_name):
 def train_and_evaluate():
     df = load_data()
 
-    df, threshold = create_target(df)
+    df = create_target(df)
 
     X, y, numeric_features, categorical_features = prepare_features(df)
 
