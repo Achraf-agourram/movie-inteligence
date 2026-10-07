@@ -139,3 +139,31 @@ def plot_silhouette_scores(results):
 
     plt.close()
 
+
+def plot_clusters_2d(matrix, labels, k):
+
+    svd = TruncatedSVD(n_components=2, random_state=12)
+
+    matrix_2d = svd.fit_transform(matrix)
+
+    plt.figure(figsize=(10, 7))
+
+    for cluster_id in range(k):
+        points = matrix_2d[labels == cluster_id]
+
+        plt.scatter(
+            points[:, 0],
+            points[:, 1],
+            label=f"Cluster {cluster_id}",
+            alpha=0.6
+        )
+
+    plt.xlabel("SVD Component 1")
+    plt.ylabel("SVD Component 2")
+    plt.title("K-Means Clusters - TF-IDF reduced with SVD")
+    plt.legend()
+
+    plt.savefig(f"{RESULTS_DIR}/clusters_2d.png", bbox_inches="tight")
+
+    plt.close()
+
