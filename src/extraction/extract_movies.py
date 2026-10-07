@@ -148,7 +148,5 @@ def extract_movies():
 
 if __name__ == "__main__":
     movies = extract_movies()
-    client, collection = connect_mongodb()
-    load_to_mongodb(movies, client, collection)
 
     print(f"{len(movies)} movies extracted")

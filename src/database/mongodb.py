@@ -42,3 +42,10 @@ def load_to_mongodb(movies, client, collection):
     client.close()
 
     return len(movies)
+
+if __name__ == "__main__":
+    client, collection = connect_mongodb()
+    movies = pd.read_json(Path("data/raw/movies.json"))
+    load_to_mongodb(movies, client, collection)
+
+    print(f" movies loaded to MongoDB")
