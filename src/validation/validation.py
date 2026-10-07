@@ -94,3 +94,53 @@ def optimize_svm(numeric_features, categorical_features, X_train, y_train):
 
     return grid_search
 
+def compare_svm_before_after(baseline_svm, optimized_svm, X_train, y_train):
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=12)
+
+    scoring = {
+        "accuracy": "accuracy",
+        "precision": "precision",
+        "recall": "recall",
+        "f1": "f1",
+        "roc_auc": "roc_auc"
+    }
+
+    baseline_scores = cross_validate(
+        baseline_svm,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring=scoring,
+        n_jobs=-1
+    )
+
+    optimized_scores = cross_validate(
+        optimized_svm,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring=scoring,
+        n_jobs=-1
+    )
+
+    results = pd.DataFrame([
+        {
+            "Model": "Linear SVM - Before",
+            "Accuracy": baseline_scores["test_accuracy"].mean(),
+            "Precision": baseline_scores["test_precision"].mean(),
+            "Recall": baseline_scores["test_recall"].mean(),
+            "F1-score": baseline_scores["test_f1"].mean(),
+            "ROC-AUC": baseline_scores["test_roc_auc"].mean()
+        },
+        {
+            "Model": "Linear SVM - After",
+            "Accuracy": optimized_scores["test_accuracy"].mean(),
+            "Precision": optimized_scores["test_precision"].mean(),
+            "Recall": optimized_scores["test_recall"].mean(),
+            "F1-score": optimized_scores["test_f1"].mean(),
+            "ROC-AUC": optimized_scores["test_roc_auc"].mean()
+        }
+    ])
+
+    return results
+
