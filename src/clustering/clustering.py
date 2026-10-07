@@ -124,3 +124,18 @@ def save_results(silhouette_results, cluster_profiles, df,labels):
 
     cluster_data.to_csv(f"{RESULTS_DIR}/movies_clusters.csv", index=False)
 
+
+def plot_silhouette_scores(results):
+
+    plt.figure(figsize=(8, 5))
+
+    plt.plot(results["k"], results["silhouette_score"], marker="o")
+
+    plt.xlabel("Number of clusters (K)")
+    plt.ylabel("Silhouette Score")
+    plt.title("Silhouette Score by K")
+
+    plt.savefig(f"{RESULTS_DIR}/silhouette_scores.png", bbox_inches="tight")
+
+    plt.close()
+
