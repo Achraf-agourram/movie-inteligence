@@ -134,3 +134,66 @@ def show_dashboard(df):
 
     st.dataframe(df[columns], use_container_width=True)
 
+
+def show_classification(df):
+    st.header("High Engagement Classification")
+
+
+    model = load_classification_model()
+
+    titles = (
+        df["title"]
+        .dropna()
+        .sort_values()
+        .tolist())
+
+    selected_title = st.selectbox(
+        "Select a movie",
+        titles)
+
+    movie = df[
+        df["title"] == selected_title
+    ].iloc[0]
+
+    movie_df = movie.to_frame().T
+
+    prediction = model.predict(
+        movie_df
+    )[0]
+
+    score = get_prediction_score(
+        model,
+        movie_df)
+
+    if prediction == 1:
+        st.success(
+            "Prediction: High engagement"
+        )
+    else:
+        st.info(
+            "Prediction: Normal engagement"
+        )
+
+    if score is not None:
+        st.write(
+            f"Model score: {score:.4f}"
+        )
+
+    st.subheader(
+        "Movie information")
+
+    st.write(
+        f"**Title:** {movie['title']}")
+
+    st.write(
+        f"**Genres:** {movie['genres']}")
+
+    st.write(
+        f"**Runtime:** {movie['runtime']} minutes")
+
+    st.write(
+        f"**Rating:** {movie['vote_average']}")
+
+    st.write(
+        f"**Votes:** {movie['vote_count']}")
+
