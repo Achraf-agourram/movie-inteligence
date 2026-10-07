@@ -84,3 +84,31 @@ def get_cluster_terms(model, vectorizer, top_n=10):
 
     return cluster_terms
 
+
+def create_cluster_profiles(df, labels, cluster_terms):
+    
+    result = df.copy()
+    result["cluster"] = labels
+
+    rows = []
+
+    for cluster_id in sorted(result["cluster"].unique()):
+
+        cluster_data = result[result["cluster"] == cluster_id]
+
+        row = {
+            "cluster": cluster_id,
+            "size": len(cluster_data),
+            "top_terms": ", ".join(cluster_terms[cluster_id])
+        }
+
+        if "runtime" in cluster_data.columns:
+            row["average_runtime"] = (cluster_data["runtime"].mean())
+
+        if "release_year" in cluster_data.columns:
+            row["average_release_year"] = (cluster_data["release_year"].mean())
+
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
