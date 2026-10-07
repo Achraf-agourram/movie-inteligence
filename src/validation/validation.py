@@ -144,3 +144,41 @@ def compare_svm_before_after(baseline_svm, optimized_svm, X_train, y_train):
 
     return results
 
+def main():
+    df = load_data()
+
+    df = create_target(df)
+
+    X, y, numeric_features, categorical_features = (prepare_features(df))
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=12, stratify=y)
+
+    models = create_models(numeric_features, categorical_features)
+
+    validation_results = cross_validate_models(models, X_train, y_train)
+
+    print("\nCross-validation results:")
+    print(validation_results)
+
+    validation_results.to_csv(f"{RESULTS_DIR}/cross_validation_results.csv", index=False)
+
+    baseline_svm = models["Linear SVM"]
+
+    grid_search = optimize_svm(numeric_features, categorical_features, X_train, y_train)
+
+    optimized_svm = grid_search.best_estimator_
+
+    grid_results = pd.DataFrame(grid_search.cv_results_)
+
+    grid_results.to_csv(f"{RESULTS_DIR}/svm_grid_search_results.csv", index=False)
+
+    comparison = compare_svm_before_after(baseline_svm, optimized_svm, X_train, y_train)
+
+    comparison.to_csv(f"{RESULTS_DIR}/svm_optimization_comparison.csv", index=False)
+
+    joblib.dump(optimized_svm, f"{MODEL_DIR}/linear_svm_optimized.pkl")
+
+    return (validation_results, comparison, grid_search.best_params_)
+
+if __name__ == "__main__":
+    main()
