@@ -15,21 +15,6 @@ def create_date_features(df):
     return df
 
 
-def create_count_features(df):
-
-    df["genre_count"] = (df["genres"].fillna("").apply(
-            lambda x: len(x) if x else 0
-        )
-    )
-
-    df["keyword_count"] = (df["keywords"].fillna("").apply(
-            lambda x: len(x) if x else 0
-        )
-    )
-
-    return df
-
-
 def create_runtime_features(df):
 
     df["runtime_category"] = pd.cut(
@@ -66,7 +51,6 @@ def create_budget_features(df):
 def create_features(df):
 
     df = create_date_features(df)
-    df = create_count_features(df)
     df = create_runtime_features(df)
     df = create_text_features(df)
     df = create_budget_features(df)
