@@ -1,0 +1,10 @@
+.git
+.env
+.venv
+venv
+**/__pycache__
+**/*.py[cod]
+airflow/logs
+logs
+reports
+docs

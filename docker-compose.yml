@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/streamlit/Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/
+      MONGO_DATABASE: ${MONGO_DATABASE:-movies_db}
+      MONGO_COLLECTION: ${MONGO_COLLECTION:-movies}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+
+  airflow:
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    command: standalone
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      MONGO_URI: mongodb://mongodb:27017/
+      MONGO_DATABASE: ${MONGO_DATABASE:-movies_db}
+      MONGO_COLLECTION: ${MONGO_COLLECTION:-movies}
+      TMDB_ACCESS_TOKEN: ${TMDB_ACCESS_TOKEN:-}
+      TMDB_TARGET_MOVIES: ${TMDB_TARGET_MOVIES:-1000}
+      TMDB_REQUEST_DELAY: ${TMDB_REQUEST_DELAY:-0.1}
+      TMDB_MAX_RETRIES: ${TMDB_MAX_RETRIES:-5}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - airflow-data:/opt/airflow
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./data:/opt/airflow/data
+      - ./models:/opt/airflow/models
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  airflow-data:
+  mongodb-data:
