@@ -72,3 +72,15 @@ def train_kmeans(matrix, k):
 
     return model, labels
 
+
+def get_cluster_terms(model, vectorizer, top_n=10):
+
+    terms = vectorizer.get_feature_names_out()
+    cluster_terms = {}
+
+    for cluster_id, center in enumerate(model.cluster_centers_):
+        top_indices = center.argsort()[::-1][:top_n]
+        cluster_terms[cluster_id] = [terms[index]for index in top_indices]
+
+    return cluster_terms
+
