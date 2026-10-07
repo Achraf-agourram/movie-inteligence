@@ -57,3 +57,10 @@ def test_k_values(matrix, k_values):
 
     return pd.DataFrame(results)
 
+
+def select_best_k(results):
+
+    best_row = results.loc[results["silhouette_score"].idxmax()]
+
+    return int(best_row["k"])
+
