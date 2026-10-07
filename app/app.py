@@ -197,3 +197,76 @@ def show_classification(df):
     st.write(
         f"**Votes:** {movie['vote_count']}")
 
+
+def show_clusters():
+    st.header("Movie Clusters")
+
+
+    cluster_data = load_cluster_data()
+    cluster_profiles = load_cluster_profiles()
+
+    st.subheader(
+        "Cluster profiles")
+
+    st.dataframe(
+        cluster_profiles,
+        use_container_width=True)
+
+    st.subheader(
+        "Cluster sizes")
+
+    cluster_sizes = (
+        cluster_data["cluster"]
+        .value_counts()
+        .sort_index())
+
+    st.bar_chart(
+        cluster_sizes)
+
+    st.subheader(
+        "2D cluster visualization")
+
+    matrix, _ = load_tfidf()
+
+    coordinates = create_svd_coordinates(
+        matrix)
+
+    plot_data = pd.DataFrame({
+        "Component 1": coordinates[:, 0],
+        "Component 2": coordinates[:, 1],
+        "Cluster": cluster_data["cluster"].astype(str)
+    })
+
+    st.scatter_chart(
+        plot_data,
+        x="Component 1",
+        y="Component 2",
+        color="Cluster")
+
+    selected_cluster = st.selectbox(
+        "Select a cluster",
+        sorted(
+            cluster_data["cluster"].unique()
+        ))
+
+    movies = cluster_data[
+        cluster_data["cluster"] == selected_cluster
+    ]
+
+    st.subheader(
+        f"Movies in cluster {selected_cluster}")
+
+    columns = [
+        column
+        for column in [
+            "title",
+            "movie_id",
+            "overview"
+        ]
+        if column in movies.columns
+    ]
+
+    st.dataframe(
+        movies[columns],
+        use_container_width=True)
+
