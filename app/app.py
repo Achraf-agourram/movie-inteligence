@@ -62,3 +62,14 @@ def create_genre_counts(df):
 
     return genres.value_counts().head(10)
 
+
+def get_prediction_score(model, movie):
+
+    if hasattr(model,"predict_proba"):
+        return model.predict_proba(movie)[0][1]
+
+    if hasattr(model,"decision_function"):
+        return model.decision_function(movie)[0]
+
+    return None
+
