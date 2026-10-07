@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 import requests
 from dotenv import load_dotenv
+from src.database.mongodb import load_to_mongodb, connect_mongodb
 
 
 load_dotenv()
@@ -147,4 +148,7 @@ def extract_movies():
 
 if __name__ == "__main__":
     movies = extract_movies()
+    client, collection = connect_mongodb()
+    load_to_mongodb(movies, client, collection)
+
     print(f"{len(movies)} movies extracted")
