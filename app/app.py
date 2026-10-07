@@ -46,3 +46,19 @@ def load_tfidf():
 
     return matrix, vectorizer
 
+
+def create_svd_coordinates(matrix):
+
+    svd = TruncatedSVD(n_components=2, random_state=12)
+    coordinates = svd.fit_transform(matrix)
+
+    return coordinates
+
+
+def create_genre_counts(df):
+
+    genres = (df["genres"].fillna("").str.split(", ").explode())
+    genres = genres[genres != ""]
+
+    return genres.value_counts().head(10)
+
