@@ -53,3 +53,44 @@ def cross_validate_models(models, X_train, y_train):
 
     return pd.DataFrame(results)
 
+def optimize_svm(numeric_features, categorical_features, X_train, y_train):
+
+    preprocessor = create_preprocessor(numeric_features, categorical_features)
+
+    svm = Pipeline([
+        (
+            "preprocessing",
+            preprocessor
+        ),
+        (
+            "model",
+            LinearSVC(random_state=12)
+        )
+    ])
+
+    param_grid = {
+        "model__C": [
+            0.01,
+            0.1,
+            1,
+            10,
+            100
+        ],
+        "model__class_weight": [
+            None,
+            "balanced"
+        ],
+        "model__loss": [
+            "hinge",
+            "squared_hinge"
+        ]
+    }
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=12)
+
+    grid_search = GridSearchCV(estimator=svm, param_grid=param_grid, cv=cv, scoring="f1", n_jobs=-1, return_train_score=True)
+
+    grid_search.fit(X_train, y_train)
+
+    return grid_search
+
