@@ -48,4 +48,4 @@ if __name__ == "__main__":
     movies = pd.read_json(Path("data/raw/movies.json"))
     load_to_mongodb(movies, client, collection)
 
-    print(f" movies loaded to MongoDB")
+    print(f" {len(movies)} movies loaded to MongoDB")
