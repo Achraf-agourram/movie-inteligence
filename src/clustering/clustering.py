@@ -112,3 +112,15 @@ def create_cluster_profiles(df, labels, cluster_terms):
 
     return pd.DataFrame(rows)
 
+
+def save_results(silhouette_results, cluster_profiles, df,labels):
+
+    silhouette_results.to_csv(f"{RESULTS_DIR}/silhouette_scores.csv", index=False)
+
+    cluster_profiles.to_csv(f"{RESULTS_DIR}/cluster_profiles.csv", index=False)
+
+    cluster_data = df.copy()
+    cluster_data["cluster"] = labels
+
+    cluster_data.to_csv(f"{RESULTS_DIR}/movies_clusters.csv", index=False)
+
