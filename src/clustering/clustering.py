@@ -64,3 +64,11 @@ def select_best_k(results):
 
     return int(best_row["k"])
 
+
+def train_kmeans(matrix, k):
+
+    model = KMeans(n_clusters=k, n_init=10, random_state=12)
+    labels = model.fit_predict(matrix)
+
+    return model, labels
+
