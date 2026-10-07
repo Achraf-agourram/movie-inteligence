@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 from ..config import load_data, save_data
+from ..database.mongodb import connect_mongodb
 
 OUTPUT_FILE = Path("data/features/movies_features.csv")
 
@@ -59,9 +60,11 @@ def create_features(df):
 
 
 def main():
+    client, collection = connect_mongodb()
     
-    df = load_data()
+    df = load_data(client, collection)
     df = create_features(df)
+
     save_data(df, OUTPUT_FILE)
 
     return df
