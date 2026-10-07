@@ -167,3 +167,45 @@ def plot_clusters_2d(matrix, labels, k):
 
     plt.close()
 
+
+def main():
+
+    df, matrix, vectorizer = load_data()
+
+    k_values = range(2, 11)
+
+    silhouette_results = test_k_values(matrix, k_values)
+
+    print("\nSilhouette scores:")
+    print(silhouette_results)
+
+    best_k = select_best_k(silhouette_results)
+
+    print(f"\nBest K: {best_k}")
+
+    model, labels = train_kmeans(matrix, best_k)
+
+    cluster_terms = get_cluster_terms(model, vectorizer,top_n=10)
+
+    cluster_profiles = create_cluster_profiles(df, labels, cluster_terms)
+
+    print("\nCluster profiles:")
+    print(cluster_profiles)
+
+    save_results(silhouette_results,  cluster_profiles, df, labels)
+
+    plot_silhouette_scores(silhouette_results)
+
+    plot_clusters_2d(matrix, labels, best_k)
+
+    joblib.dump(model, f"{RESULTS_DIR}/kmeans_model.pkl")
+
+    return (
+        model,
+        labels,
+        silhouette_results,
+        cluster_profiles
+    )
+
+if __name__ == "__main__":
+    main()
