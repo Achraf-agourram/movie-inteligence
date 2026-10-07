@@ -270,3 +270,37 @@ def show_clusters():
         movies[columns],
         use_container_width=True)
 
+
+def main():
+
+    st.title("🎬 Movie Analytics Platform")
+
+    st.sidebar.title(
+        "Navigation")
+
+    page = st.sidebar.radio(
+        "Go to",
+        [
+            "Dashboard",
+            "Classification",
+            "Clusters"
+        ])
+
+    if not os.path.exists(DATA_FILE):
+        st.error(f"Missing file: {DATA_FILE}")
+        return
+
+    df = load_movies()
+
+    if page == "Dashboard":
+        show_dashboard(df)
+
+    elif page == "Classification":
+        show_classification(df)
+
+    elif page == "Clusters":
+        show_clusters()
+
+
+if __name__ == "__main__":
+    main()
