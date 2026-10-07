@@ -73,3 +73,64 @@ def get_prediction_score(model, movie):
 
     return None
 
+
+def show_dashboard(df):
+
+    st.header("Dashboard")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Movies", len(df))
+
+    col2.metric("Average rating", round(df["vote_average"].mean(), 2))
+
+    col3.metric("Average popularity", round(df["popularity"].mean(),2))
+
+    col4.metric("Average runtime",round(df["runtime"].mean(), 1))
+
+    st.subheader("Movies released by year")
+
+    releases = (
+        df["release_year"]
+        .dropna()
+        .astype(int)
+        .value_counts()
+        .sort_index())
+
+    st.line_chart(
+        releases)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Top genres")
+
+        genre_counts = create_genre_counts(df)
+
+        st.bar_chart(genre_counts)
+
+    with col2:
+        st.subheader("Rating distribution")
+
+        rating_counts = (
+            df["vote_average"]
+            .round(1)
+            .value_counts()
+            .sort_index()
+        )
+
+        st.bar_chart(rating_counts)
+
+    st.subheader("Movies")
+
+    columns = [
+        "title",
+        "release_year",
+        "runtime",
+        "vote_average",
+        "vote_count",
+        "popularity"
+    ]
+
+    st.dataframe(df[columns], use_container_width=True)
+
